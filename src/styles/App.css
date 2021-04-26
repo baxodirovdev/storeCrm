@@ -1,0 +1,87 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.app {
+  width: 100%;
+}
+
+.trigger {
+  padding: 0 24px;
+  font-size: 18px;
+  line-height: 64px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+.ant-layout-sider {
+  height: 100vh;
+  position: sticky !important;
+  top: 0;
+  left: 0;
+}
+
+.ant-layout-header {
+  position: sticky !important;
+  top: 0;
+  right: 0;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.editProfile .ant-form-item-control-input-content {
+  display: block;
+  text-align: right;
+}
+
+.ant__block {
+  box-sizing: border-box;
+  font-variant: tabular-nums;
+  list-style: none;
+  width: 100%;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  line-height: 1.5715;
+  background-image: none;
+  display: inline-block;
+  width: 90px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+.ant__block_input {
+  width: 100%;
+  height: 30px;
+  padding: 0 11px;
+  text-align: left;
+  border: 0;
+  border-radius: 2px;
+  outline: 0;
+}
+
+.ant__select {
+  margin: 0;
+  padding: 4px 22px;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  line-height: 1.5715;
+  list-style: none;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  outline: none;
+}

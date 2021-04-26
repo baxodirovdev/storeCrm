@@ -1,0 +1,20 @@
+.auth {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth .ant-form {
+  width: 576px;
+}
+.auth .ant-form .ant-form-item-control-input-content {
+  display: block;
+  text-align: right;
+}
+
+.auth__link p {
+  text-align: center;
+}
+
+
