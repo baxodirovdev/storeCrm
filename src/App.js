@@ -10,6 +10,8 @@ import { Auth } from "./pages/Auth/Auth";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "./redux/actions/UserAction";
 import { getProducts } from "./redux/actions/ProductsAction";
+import { getClients } from "./redux/actions/ClientAction";
+import { getSales } from "./redux/actions/SalesAction";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,8 +23,9 @@ function App() {
       if (user) {
         dispatch(setUser(user));
         dispatch(getProducts(user.uid));
+        dispatch(getClients(user.uid));
+        dispatch(getSales(user.uid))
       }
-
       setLoader(false);
     });
   }, [user, dispatch]);

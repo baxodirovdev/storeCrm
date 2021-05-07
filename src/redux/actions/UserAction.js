@@ -18,7 +18,7 @@ export const signUp = (email, password) => async (dispatch) => {
   const res = await auth.createUserWithEmailAndPassword(email, password);
   const user = await res.user;
 
-  db.collection("users").doc(user.uid).set({})
+  db.collection("users").doc(user.uid).set({});
 
   dispatch({
     type: SIGN_UP,
@@ -52,7 +52,13 @@ export const updateProfile = (values) => async (dispatch) => {
       })
       .then(() => {
         message.success("Name Updated");
-        console.log("Name Updated");
+        dispatch({
+          type: SIGN_IN,
+          payload: {
+            ...user,
+            displayName: name,
+          },
+        });
       })
       .catch((error) => message.error(error));
   }
@@ -75,7 +81,7 @@ export const updateProfile = (values) => async (dispatch) => {
   });
 };
 
-const reauthenticate = (currentPassword) => {
+const reAuthenticate = (currentPassword) => {
   var user = auth.currentUser;
   var cred = firebase.auth.EmailAuthProvider.credential(
     user.email,
@@ -85,7 +91,7 @@ const reauthenticate = (currentPassword) => {
 };
 
 const changePassword = (currentPassword, newPassword) => {
-  reauthenticate(currentPassword)
+  reAuthenticate(currentPassword)
     .then(() => {
       var user = auth.currentUser;
       user
@@ -102,7 +108,7 @@ const changePassword = (currentPassword, newPassword) => {
     });
 };
 const changeEmail = (currentPassword, newEmail) => {
-  reauthenticate(currentPassword)
+  reAuthenticate(currentPassword)
     .then(() => {
       var user = auth.currentUser;
       user

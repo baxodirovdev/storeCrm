@@ -1,6 +1,11 @@
 import { message } from "antd";
 import db from "../../firebase";
-import { ADD_PRODUCT, GET_PRODUCT } from "../CONSTANTS";
+import {
+  ADD_PRODUCT,
+  EDIT_PRODUCT,
+  GET_PRODUCT,
+  REMOVE_PRODUCT,
+} from "../CONSTANTS";
 
 export const addProduct = (
   productName,
@@ -19,21 +24,77 @@ export const addProduct = (
       category,
       userUid,
     })
-    .then(() => message.success("Product added"))
+    .then((res) => {
+      dispatch({
+        type: ADD_PRODUCT,
+        payload: {
+          productName,
+          cost: +cost,
+          number: +number,
+          category,
+          userUid,
+          key: res.id,
+        },
+      });
+      message.success("Product added");
+    })
     .catch((err) => message.error(err));
+};
 
-  const products = {
-    productName,
-    cost: +cost,
-    number: +number,
-    category,
-    userUid,
-  };
+export const editProducts = (userId, key, newData, oldData) => async (
+  dispatch
+) => {
+  db.collection("users")
+    .doc(userId)
+    .collection("products")
+    .doc(key)
+    .set({
+      ...oldData,
+      ...newData,
+    })
+    .then(() => {
+      dispatch({
+        type: EDIT_PRODUCT,
+        payload: { key, newData },
+      });
+      message.success("Product updated");
+    })
+    .catch((err) => message.error(err));
+};
 
-  dispatch({
-    type: ADD_PRODUCT,
-    payload: products,
-  });
+export const updateProducts = (userId, products) => async (dispatch) => {
+  db.collection("users")
+    .doc(userId)
+    .collection("products")
+    .get()
+    .then((res) => {
+      res.forEach((doc) => {
+        products.forEach((product) => {
+          if (product.key === doc.ref.id) {
+            doc.ref.update({
+              number: product.number,
+            });
+          }
+        });
+      });
+    })
+    .catch((err) => message.error(err));
+};
+
+export const removeProducts = (userId, key) => async (dispatch) => {
+  db.collection("users")
+    .doc(userId)
+    .collection("products")
+    .doc(key)
+    .delete()
+    .then(() => {
+      dispatch({
+        type: REMOVE_PRODUCT,
+        payload: key,
+      });
+      message.success("Product deleted");
+    })
+    .catch((err) => message.error(err));
 };
 
 export const getProducts = (userId) => async (dispatch) => {
@@ -44,7 +105,7 @@ export const getProducts = (userId) => async (dispatch) => {
     .get();
 
   const products = await res.docs.map((doc) => {
-    return doc.data();
+    return { ...doc.data(), key: doc.id };
   });
 
   dispatch({

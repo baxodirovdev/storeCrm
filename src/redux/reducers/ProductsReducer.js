@@ -1,4 +1,10 @@
-import { ADD_PRODUCT, EDIT_PRODUCT, GET_PRODUCT, REMOVE_PRODUCT } from "../CONSTANTS";
+import {
+  ADD_PRODUCT,
+  EDIT_PRODUCT,
+  GET_PRODUCT,
+  REMOVE_PRODUCT,
+  UPDATE_PRODUCT,
+} from "../CONSTANTS";
 
 const initialState = {
   products: [],
@@ -13,12 +19,29 @@ const ProductsReducer = (state = initialState, action) => {
       };
 
     case REMOVE_PRODUCT:
+      const newProducts = state.products.filter(
+        (item) => item.key !== action.payload
+      );
+
       return {
         ...state,
-        products: action.payload,
+        products: newProducts,
       };
 
     case EDIT_PRODUCT:
+      const newData = [...state.products];
+      const index = newData.findIndex(
+        (item) => action.payload.key === item.key
+      );
+      const item = newData[index];
+      newData.splice(index, 1, { ...item, ...action.payload.newData });
+
+      return {
+        ...state,
+        products: newData,
+      };
+
+    case UPDATE_PRODUCT:
       return {
         ...state,
         products: action.payload,

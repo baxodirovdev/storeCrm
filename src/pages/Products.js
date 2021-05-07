@@ -1,10 +1,15 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, message } from "antd";
 import Modal from "antd/lib/modal/Modal";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { EditableTable } from "../components/layout/EditableTable";
+import { ProductsTableList } from "../components/TableList/ProductsTableList";
 import { addProduct, getProducts } from "../redux/actions/ProductsAction";
-import "../styles/Products.css";
+import {
+  ContentBody,
+  ContentHeader,
+  ContentPageTitle,
+} from "../styledComponents/Content";
+import { FormBlock, FormInput, FormSelect } from "../styledComponents/Form";
 
 const layout = {
   labelCol: {
@@ -19,9 +24,16 @@ export const Products = () => {
   const user = useSelector((state) => state.user.user);
   const products = useSelector((state) => state.products.products);
   const dispatch = useDispatch();
-
   const [state, setState] = useState({
-    items: ["Tv", "Fridge"],
+    items: [
+      "Tv",
+      "Fridge",
+      "Gas Stove",
+      "Air Conditioning",
+      "Washing Machine",
+      "microwave",
+      "Small household appliances",
+    ],
     productName: "",
     cost: 0,
     number: 0,
@@ -32,8 +44,6 @@ export const Products = () => {
     dispatch(getProducts(user.uid));
     // eslint-disable-next-line
   }, []);
-
-  console.log(products);
 
   const onChangeHandler = (event) => {
     setState({
@@ -72,15 +82,15 @@ export const Products = () => {
 
   return (
     <div className="products">
-      <div className="products__header">
+      <ContentHeader className="products__header">
+        <ContentPageTitle>Products</ContentPageTitle>
         <Button type="primary" onClick={showModal}>
-          Add Product
+          + Add Product
         </Button>
-      </div>
-      <div className="products__body">
-
-        <EditableTable />
-      </div>
+      </ContentHeader>
+      <ContentBody className="products__body">
+        <ProductsTableList products={products} userId={user.uid} />
+      </ContentBody>
       <Modal
         title="Add Products"
         visible={isModalVisible}
@@ -111,11 +121,14 @@ export const Products = () => {
               },
             ]}
           >
-            <Input
-              name="productName"
-              value={state.productName}
-              onChange={onChangeHandler}
-            />
+            <FormBlock>
+              <FormInput
+                name="productName"
+                type="text"
+                value={state.productName}
+                onChange={onChangeHandler}
+              />
+            </FormBlock>
           </Form.Item>
 
           <Form.Item
@@ -128,15 +141,14 @@ export const Products = () => {
               },
             ]}
           >
-            <div className="ant__block">
-              <input
-                className="ant__block_input"
+            <FormBlock>
+              <FormInput
                 type="number"
                 name="cost"
                 value={state.cost}
                 onChange={onChangeHandler}
               />
-            </div>
+            </FormBlock>
           </Form.Item>
 
           <Form.Item
@@ -149,15 +161,14 @@ export const Products = () => {
               },
             ]}
           >
-            <div className="ant__block">
-              <input
-                className="ant__block_input"
+            <FormBlock>
+              <FormInput
                 type="number"
                 name="number"
                 value={state.number}
                 onChange={onChangeHandler}
               />
-            </div>
+            </FormBlock>
           </Form.Item>
 
           <Form.Item
@@ -170,9 +181,7 @@ export const Products = () => {
               },
             ]}
           >
-            <select
-              className="ant__select"
-              style={{ width: 120 }}
+            <FormSelect
               name="category"
               value={state.category}
               onChange={onChangeHandler}
@@ -184,7 +193,7 @@ export const Products = () => {
                   </option>
                 );
               })}
-            </select>
+            </FormSelect>
           </Form.Item>
         </Form>
       </Modal>

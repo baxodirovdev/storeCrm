@@ -1,11 +1,11 @@
 import { Spin } from "antd";
 import React from "react";
-import "../../styles/Loader.css";
+import { LayoutLoader } from "../../styledComponents/Layout";
 
 export const Loader = () => {
   return (
-    <div className="loader">
+    <LayoutLoader>
       <Spin size="large" />
-    </div>
+    </LayoutLoader>
   );
 };

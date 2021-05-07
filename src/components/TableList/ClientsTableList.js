@@ -1,17 +1,8 @@
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-
-const originData = [];
-
-for (let i = 0; i < 100; i++) {
-  originData.push({
-    key: i.toString(),
-    name: `Edrward ${i}`,
-    age: 32,
-    address: `London Park no. ${i}`,
-  });
-}
+import { editClients, removeClients } from "../../redux/actions/ClientAction";
 
 const EditableCell = ({
   editing,
@@ -48,18 +39,25 @@ const EditableCell = ({
   );
 };
 
-export const EditableTable = () => {
+export const ClientsTableList = ({ clients, userUid }) => {
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
+  const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setData(clients);
+  }, [clients]);
 
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
-      name: "",
-      age: "",
-      address: "",
+      productName: "",
+      cost: 0,
+      number: 0,
+      category: "",
       ...record,
     });
     setEditingKey(record.key);
@@ -72,17 +70,12 @@ export const EditableTable = () => {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-
+      const index = data.findIndex((item) => key === item.key);
       if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setData(newData);
+        const item = data[index];
+        dispatch(editClients(userUid, key, row, item));
         setEditingKey("");
       } else {
-        newData.push(row);
-        setData(newData);
         setEditingKey("");
       }
     } catch (errInfo) {
@@ -92,26 +85,33 @@ export const EditableTable = () => {
 
   const columns = [
     {
-      title: "name",
-      dataIndex: "name",
-      width: "25%",
+      title: "Client Name",
+      dataIndex: "clientName",
+      width: "30%",
       editable: true,
     },
     {
-      title: "age",
-      dataIndex: "age",
+      title: "PhoneNumber",
+      dataIndex: "phoneNumber",
       width: "15%",
       editable: true,
     },
     {
-      title: "address",
-      dataIndex: "address",
-      width: "40%",
+      title: "Gender",
+      dataIndex: "gender",
+      width: "10%",
+      editable: false,
+    },
+    {
+      title: "Store Name",
+      dataIndex: "storeName",
+      width: "20%",
       editable: true,
     },
     {
       title: "operation",
       dataIndex: "operation",
+      width: "10%",
       fixed: "right",
       render: (_, record) => {
         const editable = isEditing(record);
@@ -121,11 +121,12 @@ export const EditableTable = () => {
               href="#"
               onClick={() => save(record.key)}
               style={{
-                marginRight: 8,
+                marginRight: 4,
               }}
             >
               Save
             </Link>
+
             <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
               <Link>Cancel</Link>
             </Popconfirm>
@@ -140,6 +141,22 @@ export const EditableTable = () => {
         );
       },
     },
+
+    {
+      title: "Delete",
+      dataIndex: "operation",
+      fixed: "right",
+      width: "10%",
+      render: (_, record) =>
+        data.length >= 1 ? (
+          <Typography.Link
+            disabled={editingKey !== ""}
+            onClick={() => dispatch(removeClients(userUid, record.key))}
+          >
+            Delete
+          </Typography.Link>
+        ) : null,
+    },
   ];
   const mergedColumns = columns.map((col) => {
     if (!col.editable) {
@@ -150,7 +167,10 @@ export const EditableTable = () => {
       ...col,
       onCell: (record) => ({
         record,
-        inputType: col.dataIndex === "age" ? "number" : "text",
+        inputType:
+          col.dataIndex === "number" || col.dataIndex === "cost"
+            ? "number"
+            : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),

@@ -17,5 +17,5 @@ export const NEW_CLIENT = '/client/newclient'
 
 
 export const SALES = '/sales'
-export const SALE = '/sale/:saleId'
-export const NEW_SALE = '/sale/newsale'
+export const SALE = '/sales/:saleId'
+export const NEW_SALE = '/newSale'
