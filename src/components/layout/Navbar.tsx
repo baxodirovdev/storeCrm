@@ -24,13 +24,16 @@ type NavbarProps = {
 export const Navbar = ({ collapsed, toggle, user }: NavbarProps) => {
   const dispatch = useDispatch();
 
-  function handleMenuClick(): void {
+  function handleMenuClick(e: any): void {
+    if(e.key === "2"){
+      
       dispatch(signOut());
+    }      
   }
 
   const menu = (
-    <Menu >
-      <Menu.Item key="1" onClick={handleMenuClick} icon={<UserOutlined />}>
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1"  icon={<UserOutlined />}>
         <Link to="/editprofile"> Edit profile</Link>
       </Menu.Item>
       <Menu.Item key="2" icon={<ExportOutlined />}>
